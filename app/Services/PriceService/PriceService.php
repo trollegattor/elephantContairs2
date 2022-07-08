@@ -2,17 +2,17 @@
 
 namespace App\Services\PriceService;
 
-
 use App\Managers\TypeManager;
 use App\Models\Currency;
 use App\Models\Port;
 use App\Models\Price;
-use \SimpleXMLElement;
+use SimpleXMLElement;
 
 class PriceService
 {
 
     public const CARRIER = array('json', 'xml');
+    //https://www.php.net/manual/en/language.oop5.constants.php
 
     public function get($origin, $destination, $amount)
     {
@@ -101,14 +101,20 @@ class PriceService
     }
 
 
-
-    public function getPrice()
+    /**
+     * @param $request
+     * @return array
+     */
+    public function getPrice($request): array
     {
+        $total=[];
         foreach(self::CARRIER as $value)
         {
-            print_r($value);
+            $element=app(TypeManager::class)->driver($value.'carrier')->getJson($request);
+            $total[]=$element;
         }
-        //$a = $typeManager->Json();
-        return 'dlkjht';
+
+        return $total;
     }
+
 }

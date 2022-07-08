@@ -1,22 +1,31 @@
 <?php
 namespace App\Managers;
 
+
+use App\Carriers\JsonCarrier;
+use App\Carriers\XmlCarrier;
 use Illuminate\Support\Manager;
-use App\Services\JsonService\JsonService;
+
 
 class TypeManager extends Manager
 {
-    public function getDefaultDriver()
+    /**
+     * @return string
+     */
+    public function getDefaultDriver(): string
     {
-        return 'jsonservice';
+        return 'jsoncarrier';
     }
-    public function createJsonServiceDriver()
+
+
+    public function createJsonCarrierDriver()
     {
-        return new JsonService();
+        return new JsonCarrier();
     }
-    public function createBicycleDriver()
+
+    public function createXmlCarrierDriver()
     {
-        return new Bicycle();
+        return new XmlCarrier();
     }
 
 }

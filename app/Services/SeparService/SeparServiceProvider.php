@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services\JsonService;
+namespace App\Services\SeparService;
 
 use Illuminate\Support\ServiceProvider;
 
-class JsonServiceProvider extends ServiceProvider
+class SeparServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -13,7 +13,9 @@ class JsonServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(SeparService::class, function ($app) {
+            return new SeparService();
+        });
     }
 
     /**

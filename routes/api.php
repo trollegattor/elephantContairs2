@@ -8,6 +8,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });*/
 //Route::apiResources(['json'=>JsonController::class]);
 //Route::apiResources(['example'=>ExampleController::class]);
-Route::get('/v1/quote/rates/{origin}/{destination}/{amount}',[PriceController::class, 'get']);
+Route::get('/v1/quote/rates/{origin}/{destination}/{amount}',[PriceController::class, 'study']);
 Route::get('/v1/quote/rates/update',[PriceController::class, 'updateXml']);
 Route::get('/v1/quote/rates/study',[PriceController::class, 'study']);

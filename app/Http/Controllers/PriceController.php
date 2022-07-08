@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-
-
 use App\Http\Resources\PriceResourceCollection;
-use App\Managers\TypeManager;
 use App\Services\PriceService\PriceService;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -61,15 +59,23 @@ class PriceController extends Controller
 
         return $update;
     }
-    public function study()
+    public function study($origin, $destination,$amount)
     {
-        print_r('Hello');
-
-        $this->priceService->getPrice();
+        $request= new Collection(['origin'=>$origin,'destination'=> $destination,'amount'=>$amount]);
 
 
-        //$a=$typeManager->Json();
-        //dump($a);
+        $price=$this->priceService->getPrice($request);
+        //dd($price);
+
+
+        //$a=$typeManager->JsonCarrier();
+        //dump([$price]);
+
+
+
+
+       return response()->json($price);
+
 
     }
 
