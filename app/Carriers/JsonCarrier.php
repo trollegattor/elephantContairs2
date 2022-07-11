@@ -1,47 +1,44 @@
 <?php
 namespace App\Carriers;
 
-use App\Services\SeparService\SeparService;
-use Illuminate\Support\Collection;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-
 
 class JsonCarrier
 {
-    public function getJson($request)
+    /**
+     * @param $request
+     * @return array
+     */
+    public function getJson($request): array
     {
         $data=Storage::get('carrier-json.json');
+        $validator=Validator::make(['array'=>$data],['array'=>'json']);
+        if($validator->fails())
+        {
+            return ['Error, file - '.MyCarriers::JSON];
+        }
         $data=json_decode($data);
         foreach ($data as $datum)
         {
-            if($datum->max_date){
-                //dd($datum->max_date);
-            }
             if (Str::upper($datum->origin)==$request->get('origin')
-            and Str::upper($datum->destination)==$request->get('destination'))
+                and Str::upper($datum->destination)==$request->get('destination'))
             {
+                if($datum->max_date <= (new Carbon())->getTimestamp())
+                {
+                    return ['Data is out of date, please update the carrier - '.MyCarriers::JSON];
+                }
                 $newData=[
-                    'carrier'=>'JSON',
+                    'carrier'=>Str::upper(MyCarriers::JSON),
                     'total_price'=>round($datum->price_per_container*$request->get('amount'),2),
-                    'currency'=>$datum->currency
+                    'currency'=>MyCarriers::CURRENCY[$datum->currency],
                 ];
 
                 return $newData;
-
             }
-            $origin = $datum->origin;
-            $destination = $datum->destination;
-            $price_container = $datum->price_per_container;
-            $expiration_date = $datum->max_date;
-            $currency = $datum->currency;
-            $expiration_date1 = $datum->max_date;
-            $array=[$origin,$destination,$price_container,$expiration_date,$currency ];
-
-
         }
-
-      //  return $dataJson;
+        return ['Error, port missing'];
     }
-
 }

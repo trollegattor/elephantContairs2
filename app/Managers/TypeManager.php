@@ -1,11 +1,9 @@
 <?php
 namespace App\Managers;
 
-
 use App\Carriers\JsonCarrier;
 use App\Carriers\XmlCarrier;
 use Illuminate\Support\Manager;
-
 
 class TypeManager extends Manager
 {
@@ -14,18 +12,22 @@ class TypeManager extends Manager
      */
     public function getDefaultDriver(): string
     {
-        return 'jsoncarrier';
+        return $this->config->get('carrier.carriers.default');
     }
 
-
-    public function createJsonCarrierDriver()
+    /**
+     * @return JsonCarrier
+     */
+    public function createJsonCarrierDriver(): JsonCarrier
     {
         return new JsonCarrier();
     }
 
-    public function createXmlCarrierDriver()
+    /**
+     * @return XmlCarrier
+     */
+    public function createXmlCarrierDriver(): XmlCarrier
     {
         return new XmlCarrier();
     }
-
 }
