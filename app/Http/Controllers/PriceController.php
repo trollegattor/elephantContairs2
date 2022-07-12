@@ -29,7 +29,7 @@ class PriceController extends Controller
      * @param $amount
      * @return JsonResponse
      */
-    public function study($origin, $destination, $amount): JsonResponse
+    public function convert($origin, $destination, $amount): JsonResponse
     {
         $request = new Collection(['origin' => $origin, 'destination' => $destination, 'amount' => $amount]);
         $price = $this->priceService->getPrice($request);
