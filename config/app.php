@@ -210,6 +210,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'MaCarriers'=>App\Carriers\MyCarriers::class,
+        'TypesCarriers'=>App\Facades\TypesCarriers::class,
     ])->toArray(),
 
 ];

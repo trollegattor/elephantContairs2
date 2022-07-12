@@ -1,27 +1,27 @@
 <?php
 
-namespace App\Providers;
+namespace App\Services\PriceService;
 
 use App\Managers\TypeManager;
 use App\Services\PriceService\PriceService;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Sanctum\Sanctum;
 
-class AppServiceProvider extends ServiceProvider
+class PriceServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Register services.
      *
      * @return void
      */
     public function register()
     {
-        Sanctum::ignoreMigrations();
+        $this->app->bind(PriceService::class, function ($app) {
+            return new PriceService();
+        });
     }
 
     /**
-     * Bootstrap any application services.
+     * Bootstrap services.
      *
      * @return void
      */
