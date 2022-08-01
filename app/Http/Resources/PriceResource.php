@@ -17,8 +17,8 @@ class PriceResource extends JsonResource
     {
         return [
             'carrier' => $this->carrier,
-            'total_price' => $this->price_container,
-            'currency' => $this->currency->name,
+            'total_price' => $this->total_price,
+            'currency' => $this->currency,
         ];
     }
 }

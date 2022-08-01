@@ -2,43 +2,61 @@
 
 namespace App\Carriers;
 
+use App\Carriers\Exception\UnKnownCurrencySymbolException;
 use App\Rules\XmlRule;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
-class XmlCarrier
+class XmlCarrier extends BaseCarriers
 {
     /**
-     * @param $request
+     * @param string $data
+     * @return array
+     * @throws UnKnownCurrencySymbolException
+     */
+    protected function decodeRates(string $data): array
+    {
+        $this->validRates($data);
+        $xmlData = simplexml_load_string($data);
+        $arrayXmlData = (array)json_decode(json_encode($xmlData));
+        $finalArrayXmlData = array_pop($arrayXmlData);
+
+        return $finalArrayXmlData;
+    }
+
+    /**
+     * @param string $data
+     * @return void
+     * @throws UnKnownCurrencySymbolException
+     */
+    protected function validRates(string $data)
+    {
+        $validator = Validator::make(['array' => $data], ['array' => new XmlRule]);
+        if ($validator->fails())
+            throw new UnKnownCurrencySymbolException("Unknown format \"$data\".");
+    }
+
+    /**
+     * @param array $rates
      * @return array
      */
-    public function getJson($request): array
+    protected function ModelRates(array $rates): array
     {
-        $data = Storage::get('carrier-xml.xml');
-        $validator=Validator::make(['array'=>$data],['array'=> new XmlRule]);
-        if($validator->fails())
-        {
-            return ['Error, file - '.MyCarriers::XML];
-        }
-        $data=simplexml_load_string($data);
-        foreach ($data as $datum) {
-            if ((string)$datum->origin_port == $request->get('origin')
-                and (string)$datum->destination_port == $request->get('destination'))
-            {
-                if (Carbon::parse($datum->expiration_date)->getTimestamp()<=(new Carbon())->getTimestamp())
-                {
-                    return ['Data is out of date, please update the carrier - '.MyCarriers::XML];
-                }
-                $newData = [
-                    'carrier' => Str::upper(MyCarriers::XML),
-                    'total_price' => round((string)$datum->price_per_container * $request->get('amount'), 2),
-                    'currency' => (string)$datum->currency
-                ];
-                return $newData;
-            }
-        }
-        return ['Error, port missing'];
+        array_walk($rates, function (&$data) {
+            $data = new CarrierModel(
+                carrier: $this->carrier,
+                origin: strtoupper($data->origin_port),
+                destination: strtoupper($data->destination_port),
+                pricePerContainer: (string)$data->price_per_container,
+                pricePerShipment: '0',
+                currency: (string)$data->currency,
+                total_price:'0',
+                expiresAt: Carbon::createFromFormat('Y-m-d', $data->expiration_date)->setTime(0, 0)
+            );
+        });
+
+        return $rates;
     }
+
+
 }

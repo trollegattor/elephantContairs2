@@ -2,8 +2,7 @@
 
 namespace App\Services\PriceService;
 
-use App\Managers\TypeManager;
-use App\Services\PriceService\PriceService;
+use App\Services\PriceService\Contracts\PriceServiceContract;
 use Illuminate\Support\ServiceProvider;
 
 class PriceServiceProvider extends ServiceProvider
@@ -15,18 +14,7 @@ class PriceServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(PriceService::class, function ($app) {
-            return new PriceService();
-        });
+        $this->app->bind(PriceServiceContract::class, PriceService::class);
     }
 
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
-    }
 }

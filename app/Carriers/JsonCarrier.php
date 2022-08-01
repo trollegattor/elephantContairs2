@@ -1,44 +1,60 @@
 <?php
+
 namespace App\Carriers;
 
+use App\Carriers\Exception\UnKnownCurrencySymbolException;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
-class JsonCarrier
+class JsonCarrier extends BaseCarriers
 {
-    /**
-     * @param $request
-     * @return array
-     */
-    public function getJson($request): array
-    {
-        $data=Storage::get('carrier-json.json');
-        $validator=Validator::make(['array'=>$data],['array'=>'json']);
-        if($validator->fails())
-        {
-            return ['Error, file - '.MyCarriers::JSON];
-        }
-        $data=json_decode($data);
-        foreach ($data as $datum)
-        {
-            if (Str::upper($datum->origin)==$request->get('origin')
-                and Str::upper($datum->destination)==$request->get('destination'))
-            {
-                if($datum->max_date <= (new Carbon())->getTimestamp())
-                {
-                    return ['Data is out of date, please update the carrier - '.MyCarriers::JSON];
-                }
-                $newData=[
-                    'carrier'=>Str::upper(MyCarriers::JSON),
-                    'total_price'=>round($datum->price_per_container*$request->get('amount'),2),
-                    'currency'=>MyCarriers::CURRENCY[$datum->currency],
-                ];
 
-                return $newData;
-            }
-        }
-        return ['Error, port missing'];
+    /**
+     * @param string $data
+     * @return array
+     * @throws UnKnownCurrencySymbolException
+     */
+    protected function decodeRates(string $data): array
+    {
+        $this->validRates($data);
+        $jsonData = json_decode($data);
+
+        return $jsonData;
+    }
+
+    /**
+     * @param string $data
+     * @return array
+     * @throws UnKnownCurrencySymbolException
+     */
+    protected function validRates(string $data): array
+    {
+        $validator = Validator::make(['array' => $data], ['array' => 'json']);
+        if ($validator->fails())
+            throw new UnKnownCurrencySymbolException("Unknown format \"$data\".");
+
+        return [];
+    }
+
+    /**
+     * @param array $rates
+     * @return array
+     * @throws UnKnownCurrencySymbolException
+     */
+    protected function ModelRates(array $rates): array
+    {
+        array_walk($rates, function (&$data) {
+            $data = new CarrierModel(
+                carrier: $this->carrier,
+                origin: strtoupper($data->origin),
+                destination: strtoupper($data->destination),
+                pricePerContainer: (string)$data->price_per_container,
+                pricePerShipment: (string)$data->price_per_shipment,
+                currency: Currency::getCurrency($data->currency),
+                total_price:'0',
+                expiresAt: Carbon::createFromTimestamp($data->max_date));
+        });
+
+        return $rates;
     }
 }
