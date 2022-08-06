@@ -3,6 +3,9 @@
 namespace App\DTO;
 
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+
 class DataTransferObject
 {
     /** @var string  */
@@ -13,8 +16,6 @@ class DataTransferObject
     public int $amount;
     /** @var array  */
     public array $carriers;
-
-
 
     /**
      * @param string $origin
@@ -30,6 +31,8 @@ class DataTransferObject
 
     /**
      * @return array
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function getCarriers(): array
     {

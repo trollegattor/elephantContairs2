@@ -8,7 +8,6 @@ use App\Http\Resources\PriceResourceCollection;
 use App\Services\FlipPriceService\Contracts\FlipPriceServiceContract;
 use App\Services\PriceService\Contracts\PriceServiceContract;
 
-
 /**
  *
  */
