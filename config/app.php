@@ -189,9 +189,11 @@ return [
         /*
          * Application Service Providers...
          */
+        App\Services\FlipPriceService\FlipPriceServiceProvider::class,
+        App\Services\PriceService\PriceServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        //App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
@@ -210,6 +212,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'MaCarriers'=>App\Carriers\Carriers::class,
+        'TypesCarriers'=>App\Facades\TypesCarriers::class,
     ])->toArray(),
 
 ];
