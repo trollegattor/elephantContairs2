@@ -4,32 +4,23 @@ namespace App\Carriers;
 
 use App\Carriers\Exception\ExpirationDateException;
 use App\Carriers\Exception\UnKnownPortException;
-use App\DTO\DataTransferObject;
 use Carbon\Carbon;
 
 abstract class BaseCarriers
 {
     /**
-     * @var DataTransferObject
-     */
-    public DataTransferObject $dataTransfer;
-    /** @var string */
-    public string $carrier;
-
-    /**
-     * @param DataTransferObject $dataTransfer
+     * @param string $origin
+     * @param string $destination
      * @param string $carrier
      * @return CarrierModel
      * @throws ExpirationDateException
      * @throws UnKnownPortException
      */
-    public function getRates(DataTransferObject $dataTransfer, string $carrier): CarrierModel
+    public function getRates( string $origin,string $destination, string $carrier): CarrierModel
     {
-        $this->dataTransfer = $dataTransfer;
-        $this->carrier = $carrier;
-        $rates = $this->getContent();
-        $modelRates = $this->ModelRates($rates);
-        $rate = $this->filterRates($modelRates);
+        $rates = $this->getContent($carrier);
+        $modelRates = $this->modelRates($rates,$carrier);
+        $rate = $this->filterRates($modelRates,$origin,$destination);
         $this->validExpirationDate($rate);
 
         return $rate;
@@ -38,9 +29,10 @@ abstract class BaseCarriers
     /**
      * @return array
      */
-    protected function getContent(): array
+    protected function getContent($carrier): array
     {
-        $data = file_get_contents($this->dataTransfer->carriers[$this->carrier]);
+        $path=config('carriers');
+        $data = file_get_contents($path[$carrier]);
         $decodeData = $this->decodeRates($data);
 
         return $decodeData;
@@ -51,14 +43,14 @@ abstract class BaseCarriers
      * @return CarrierModel
      * @throws UnKnownPortException
      */
-    protected function filterRates(array $rates): CarrierModel
+    protected function filterRates(array $rates,string $origin,string $destination): CarrierModel
     {
-        $rate = array_filter($rates, function ($data) {
-            return $data->origin === $this->dataTransfer->origin &&
-                $data->destination === $this->dataTransfer->destination;
+        $rate = array_filter($rates, function ($data) use($origin,$destination){
+            return $data->origin === $origin &&
+                $data->destination === $destination;
         });
         if (empty($rate))
-            throw new UnKnownPortException('Unknown Direction '.$this->dataTransfer->origin.'/'.$this->dataTransfer->destination);
+            throw new UnKnownPortException('Unknown Direction ' . $origin . '/' . $destination);
 
         return array_pop($rate);
     }
@@ -73,7 +65,7 @@ abstract class BaseCarriers
      * @param array $rates
      * @return array
      */
-    abstract protected function ModelRates(array $rates): array;
+    abstract protected function modelRates(array $rates,string $carrier): array;
 
     /**
      * @param string $data

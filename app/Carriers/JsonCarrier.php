@@ -38,20 +38,23 @@ class JsonCarrier extends BaseCarriers
 
     /**
      * @param array $rates
+     * @param string $carrier
      * @return array
      * @throws UnKnownCurrencySymbolException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    protected function ModelRates(array $rates): array
+    protected function modelRates(array $rates,string $carrier): array
     {
-        array_walk($rates, function (&$data) {
+        array_walk($rates, function (&$data) use($carrier) {
             $data = new CarrierModel(
-                carrier: $this->carrier,
+                carrier: $carrier,
                 origin: strtoupper($data->origin),
                 destination: strtoupper($data->destination),
                 pricePerContainer: (string)$data->price_per_container,
                 pricePerShipment: (string)$data->price_per_shipment,
                 currency: Currency::getCurrency($data->currency),
-                total_price:'0',
+                total_price: '0',
                 expiresAt: Carbon::createFromTimestamp($data->max_date));
         });
 

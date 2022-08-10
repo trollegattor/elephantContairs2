@@ -2,25 +2,24 @@
 
 namespace App\Services\PriceService;
 
-use App\DTO\DataTransferObject;
-use App\Facades\TypesCarriers;
 use App\Services\PriceService\Contracts\PriceServiceContract;
 
 class PriceService implements PriceServiceContract
 {
     /**
-     * @param DataTransferObject $dataTransfer
+     * @param array $carriers
+     * @param string $amount
      * @return array
      */
-    public function getPrice(DataTransferObject $dataTransfer): array
+    public function getTotalPrice(array $carriers,  string $amount): array
     {
-        $carriers = array_keys($dataTransfer->getCarriers());
-        $total = [];
-        foreach ($carriers as $value) {
-            $element = TypesCarriers::driver($value . 'carrier')->getRates($dataTransfer, $value);
-            $total[] = $element;
-        }
+        array_map(function ($data) use ($amount) {
+            $priceContainers = bcmul($amount, $data->pricePerContainer, 2);
+            $data->total_price = bcadd($priceContainers, $data->pricePerShipment, 2);
 
-        return $total;
+            return $data;
+        }, $carriers);
+
+        return $carriers;
     }
 }

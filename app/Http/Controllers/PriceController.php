@@ -2,31 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\DTO\DataTransferObject;
 use App\Http\Requests\InputDataRequest;
 use App\Http\Resources\PriceResourceCollection;
-use App\Services\FlipPriceService\Contracts\FlipPriceServiceContract;
+use App\InitialData\InitialDataObject;
 use App\Services\PriceService\Contracts\PriceServiceContract;
+use App\Services\CarrierService\Contracts\CarriersServiceContract;
 
 /**
  *
  */
 class PriceController extends Controller
 {
-    /** @var PriceServiceContract $priceService */
-    protected PriceServiceContract $priceService;
-
-    /** @var  FlipPriceServiceContract $flipPriceService */
-    protected FlipPriceServiceContract $flipPriceService;
-
     /**
+     * @param CarriersServiceContract $carriersService
      * @param PriceServiceContract $priceService
-     * @param FlipPriceServiceContract $flipPriceService
      */
-    public function __construct(PriceServiceContract $priceService, FlipPriceServiceContract $flipPriceService)
+    public function __construct(protected CarriersServiceContract $carriersService, protected PriceServiceContract $priceService)
     {
-        $this->priceService = $priceService;
-        $this->flipPriceService = $flipPriceService;
     }
 
     /**
@@ -35,13 +27,11 @@ class PriceController extends Controller
      */
     public function convert(InputDataRequest $request): PriceResourceCollection
     {
-        $inputData = new DataTransferObject(
+        $carriers = $this->carriersService->getPrice(
             $request->validated('origin'),
-            $request->validated('destination'),
-            $request->validated('amount')
+            $request->validated('destination')
         );
-        $carriers = $this->priceService->getPrice($inputData);
-        $price = $this->flipPriceService->getTotalPrice($carriers, $inputData);
+        $price = $this->priceService->getTotalPrice($carriers, $request->validated('amount'));
 
         return new PriceResourceCollection($price);
     }

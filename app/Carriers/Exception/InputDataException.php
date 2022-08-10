@@ -4,7 +4,7 @@ namespace App\Carriers\Exception;
 
 use Exception;
 
-class ExpirationDateException extends Exception
+class InputDataException extends Exception
 {
 
 }

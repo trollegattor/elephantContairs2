@@ -40,17 +40,17 @@ class XmlCarrier extends BaseCarriers
      * @param array $rates
      * @return array
      */
-    protected function ModelRates(array $rates): array
+    protected function modelRates(array $rates,string $carrier): array
     {
-        array_walk($rates, function (&$data) {
+        array_walk($rates, function (&$data) use($carrier){
             $data = new CarrierModel(
-                carrier: $this->carrier,
+                carrier: $carrier,
                 origin: strtoupper($data->origin_port),
                 destination: strtoupper($data->destination_port),
                 pricePerContainer: (string)$data->price_per_container,
                 pricePerShipment: '0',
                 currency: (string)$data->currency,
-                total_price:'0',
+                total_price: '0',
                 expiresAt: Carbon::createFromFormat('Y-m-d', $data->expiration_date)->setTime(0, 0)
             );
         });

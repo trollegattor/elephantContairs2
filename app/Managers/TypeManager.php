@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Managers;
 
 use App\Carriers\JsonCarrier;

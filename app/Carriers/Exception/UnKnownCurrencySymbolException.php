@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Carriers\Exception;
 
 use Exception;

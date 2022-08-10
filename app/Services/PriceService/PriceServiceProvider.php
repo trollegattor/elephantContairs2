@@ -8,13 +8,10 @@ use Illuminate\Support\ServiceProvider;
 class PriceServiceProvider extends ServiceProvider
 {
     /**
-     * Register services.
-     *
      * @return void
      */
     public function register()
     {
         $this->app->bind(PriceServiceContract::class, PriceService::class);
     }
-
 }

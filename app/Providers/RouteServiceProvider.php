@@ -26,12 +26,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Route::patterns([
-            'amount' => '[0-9]+',
-            'origin' => '^[A-Za-z]{5}',
-            'destination' => '^[A-Za-z]{5}',
-        ]);
-        parent::boot();
+
 
         $this->configureRateLimiting();
 

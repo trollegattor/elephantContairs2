@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Managers\TypeManager;
-use App\Services\PriceService\PriceService;
+use App\Services\CarrierService\CarriersService;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\Sanctum;
