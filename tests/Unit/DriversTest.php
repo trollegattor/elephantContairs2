@@ -49,4 +49,20 @@ class DriversTest extends TestCase
         $managerXml=$manager->driver('Xmlcarrier')->getRates( 'ESBCN', 'USMIA', 'XML');
         $this->assertEquals($modelXml,$managerXml);
     }
+    public function testCreateDriverDefault()
+    {
+        $modelJson=new CarrierModel(
+            carrier: 'JSON',
+            origin: 'ESBCN',
+            destination: 'USMIA',
+            pricePerContainer: 1707.53,
+            pricePerShipment: 35.9,
+            currency: 'USD',
+            total_price:'0',
+            expiresAt: Carbon::createFromFormat('Y-m-d', '2023-04-29')->setTime(0, 33,54)
+        );
+        $manager=app(TypeManager::class);
+        $managerJson=$manager->getRates('ESBCN', 'USMIA', 'JSON');
+        $this->assertEquals($modelJson, $managerJson);
+    }
 }

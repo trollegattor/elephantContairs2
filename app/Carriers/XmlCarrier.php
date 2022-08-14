@@ -32,8 +32,7 @@ class XmlCarrier extends BaseCarriers
     protected function validRates(string $data)
     {
         $validator = Validator::make(['array' => $data], ['array' => new XmlRule]);
-        if ($validator->fails())
-            throw new UnKnownCurrencySymbolException("Unknown format \"$data\".");
+        $validator->fails();
     }
 
     /**
@@ -57,6 +56,4 @@ class XmlCarrier extends BaseCarriers
 
         return $rates;
     }
-
-
 }

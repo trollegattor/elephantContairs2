@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\Carriers\Exception\UnknownXmlFormatException;
 use DOMDocument;
 use Illuminate\Contracts\Validation\Rule;
 
@@ -24,12 +25,11 @@ class XmlRule implements Rule
     }
 
     /**
-     * Get the validation error message.
-     *
      * @return string
+     * @throws UnknownXmlFormatException
      */
     public function message(): string
     {
-        return 'The validation error message.';
+        return  throw new UnknownXmlFormatException('Unknown format from XML carrier.');
     }
 }

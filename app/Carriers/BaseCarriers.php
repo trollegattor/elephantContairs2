@@ -22,7 +22,6 @@ abstract class BaseCarriers
         $modelRates = $this->modelRates($rates,$carrier);
         $rate = $this->filterRates($modelRates,$origin,$destination);
         $this->validExpirationDate($rate);
-
         return $rate;
     }
 

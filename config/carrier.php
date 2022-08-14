@@ -2,6 +2,6 @@
 
 return [
     'carriers'=>[
-        'default' => env('JSONCARRIER_DRIVER', 'jsoncarrier'),
+        'default' => env('JSONCARRIER_DRIVER', default: 'JsonCarrier'),
     ],
 ];

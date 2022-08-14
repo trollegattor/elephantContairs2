@@ -13,7 +13,10 @@ class TypeManager extends Manager
      */
     public function getDefaultDriver(): string
     {
-        return $this->config->get('carrier.carriers.default');
+        /** @var string $default */
+        $default=$this->config->get('carrier.carriers.default');
+
+        return  $default;
     }
 
     /**
@@ -21,6 +24,7 @@ class TypeManager extends Manager
      */
     public function createJsonCarrierDriver(): JsonCarrier
     {
+
         return new JsonCarrier();
     }
 

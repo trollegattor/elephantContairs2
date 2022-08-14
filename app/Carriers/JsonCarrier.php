@@ -3,6 +3,7 @@
 namespace App\Carriers;
 
 use App\Carriers\Exception\UnKnownCurrencySymbolException;
+use App\Carriers\Exception\UnknownJsonFormatException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,13 +26,13 @@ class JsonCarrier extends BaseCarriers
     /**
      * @param string $data
      * @return array
-     * @throws UnKnownCurrencySymbolException
+     * @throws UnknownJsonFormatException
      */
     protected function validRates(string $data): array
     {
         $validator = Validator::make(['array' => $data], ['array' => 'json']);
         if ($validator->fails())
-            throw new UnKnownCurrencySymbolException("Unknown format \"$data\".");
+            throw new UnknownJsonFormatException("Unknown format from Json carrier.");
 
         return [];
     }

@@ -5,7 +5,7 @@ namespace App\Carriers\Exception;
 use Exception;
 use Illuminate\Http\JsonResponse;
 
-class ExpirationDateException extends Exception
+class UnknownJsonFormatException extends Exception
 {
     /**
      * @return JsonResponse
