@@ -10,11 +10,9 @@ use Illuminate\Foundation\Http\FormRequest;
 class InputDataRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -22,11 +20,11 @@ class InputDataRequest extends FormRequest
     /**
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'origin' => ['alpha','size:5',new Uppercase()],
-            'destination' => ['alpha','size:5',new Uppercase()],
+            'origin' => ['alpha', 'size:5', new Uppercase()],
+            'destination' => ['alpha', 'size:5', new Uppercase()],
             'amount' => ['integer', 'min:1'],
         ];
     }
@@ -39,11 +37,15 @@ class InputDataRequest extends FormRequest
         return $this->route()->parameters();
     }
 
-
-    protected function failedValidation(Validator $validator)
+    /**
+     * @param Validator $validator
+     * @return void
+     * @throws InputDataException
+     */
+    protected function failedValidation(Validator $validator): void
     {
-        $data=$validator->errors()->all();
-        $error=implode('; ',$data);
+        $data = $validator->errors()->all();
+        $error = implode('; ', $data);
         throw new InputDataException($error);
     }
 }

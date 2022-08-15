@@ -2,7 +2,6 @@
 
 namespace App\Carriers;
 
-use App\Carriers\Exception\UnKnownCurrencySymbolException;
 use App\Rules\XmlRule;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -12,7 +11,6 @@ class XmlCarrier extends BaseCarriers
     /**
      * @param string $data
      * @return array
-     * @throws UnKnownCurrencySymbolException
      */
     protected function decodeRates(string $data): array
     {
@@ -27,9 +25,8 @@ class XmlCarrier extends BaseCarriers
     /**
      * @param string $data
      * @return void
-     * @throws UnKnownCurrencySymbolException
      */
-    protected function validRates(string $data)
+    protected function validRates(string $data): void
     {
         $validator = Validator::make(['array' => $data], ['array' => new XmlRule]);
         $validator->fails();
@@ -37,11 +34,12 @@ class XmlCarrier extends BaseCarriers
 
     /**
      * @param array $rates
+     * @param string $carrier
      * @return array
      */
-    protected function modelRates(array $rates,string $carrier): array
+    protected function modelRates(array $rates, string $carrier): array
     {
-        array_walk($rates, function (&$data) use($carrier){
+        array_walk($rates, function (&$data) use ($carrier) {
             $data = new CarrierModel(
                 carrier: $carrier,
                 origin: strtoupper($data->origin_port),

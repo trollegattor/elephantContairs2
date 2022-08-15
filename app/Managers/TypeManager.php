@@ -14,9 +14,9 @@ class TypeManager extends Manager
     public function getDefaultDriver(): string
     {
         /** @var string $default */
-        $default=$this->config->get('carrier.carriers.default');
+        $default = $this->config->get('carrier.carriers.default');
 
-        return  $default;
+        return $default;
     }
 
     /**

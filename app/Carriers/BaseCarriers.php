@@ -16,21 +16,23 @@ abstract class BaseCarriers
      * @throws ExpirationDateException
      * @throws UnKnownPortException
      */
-    public function getRates( string $origin,string $destination, string $carrier): CarrierModel
+    public function getRates(string $origin, string $destination, string $carrier): CarrierModel
     {
         $rates = $this->getContent($carrier);
-        $modelRates = $this->modelRates($rates,$carrier);
-        $rate = $this->filterRates($modelRates,$origin,$destination);
+        $modelRates = $this->modelRates($rates, $carrier);
+        $rate = $this->filterRates($modelRates, $origin, $destination);
         $this->validExpirationDate($rate);
+
         return $rate;
     }
 
     /**
+     * @param $carrier
      * @return array
      */
     protected function getContent($carrier): array
     {
-        $path=config('carriers');
+        $path = config('carriers');
         $data = file_get_contents($path[$carrier]);
         $decodeData = $this->decodeRates($data);
 
@@ -39,12 +41,14 @@ abstract class BaseCarriers
 
     /**
      * @param array $rates
+     * @param string $origin
+     * @param string $destination
      * @return CarrierModel
      * @throws UnKnownPortException
      */
-    protected function filterRates(array $rates,string $origin,string $destination): CarrierModel
+    protected function filterRates(array $rates, string $origin, string $destination): CarrierModel
     {
-        $rate = array_filter($rates, function ($data) use($origin,$destination){
+        $rate = array_filter($rates, function ($data) use ($origin, $destination) {
             return $data->origin === $origin &&
                 $data->destination === $destination;
         });
@@ -54,7 +58,12 @@ abstract class BaseCarriers
         return array_pop($rate);
     }
 
-    protected function validExpirationDate($rate)
+    /**
+     * @param $rate
+     * @return void
+     * @throws ExpirationDateException
+     */
+    protected function validExpirationDate($rate): void
     {
         if ($rate->expiresAt->lt((new Carbon())->toDateTimeString()))
             throw new ExpirationDateException("Data is out of date, please update the carrier \"$rate->carrier\".");
@@ -62,15 +71,16 @@ abstract class BaseCarriers
 
     /**
      * @param array $rates
+     * @param string $carrier
      * @return array
      */
-    abstract protected function modelRates(array $rates,string $carrier): array;
+    abstract protected function modelRates(array $rates, string $carrier): array;
 
     /**
      * @param string $data
      * @return void
      */
-    abstract protected function validRates(string $data);
+    abstract protected function validRates(string $data): void;
 
     /**
      * @param string $data

@@ -12,12 +12,12 @@ class CarriersService implements CarriersServiceContract
      * @param string $destination
      * @return array
      */
-    public function getPrice(string $origin,string $destination): array
+    public function getPrice(string $origin, string $destination): array
     {
         $carriers = array_keys(config('carriers'));
         $total = [];
         foreach ($carriers as $value) {
-            $element = TypesCarriers::driver($value . 'carrier')->getRates( $origin, $destination, $value);
+            $element = TypesCarriers::driver($value . 'carrier')->getRates($origin, $destination, $value);
             $total[] = $element;
         }
 

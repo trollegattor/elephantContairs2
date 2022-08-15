@@ -27,5 +27,4 @@ class CarrierModel
         public Carbon $expiresAt)
     {
     }
-
 }

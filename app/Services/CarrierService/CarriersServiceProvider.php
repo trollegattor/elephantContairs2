@@ -16,5 +16,4 @@ class CarriersServiceProvider extends ServiceProvider
     {
         $this->app->bind(CarriersServiceContract::class, CarriersService::class);
     }
-
 }

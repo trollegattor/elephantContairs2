@@ -4,13 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InputDataRequest;
 use App\Http\Resources\PriceResourceCollection;
-use App\InitialData\InitialDataObject;
 use App\Services\PriceService\Contracts\PriceServiceContract;
 use App\Services\CarrierService\Contracts\CarriersServiceContract;
 
-/**
- *
- */
+
 class PriceController extends Controller
 {
     /**

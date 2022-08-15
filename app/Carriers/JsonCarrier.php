@@ -6,14 +6,15 @@ use App\Carriers\Exception\UnKnownCurrencySymbolException;
 use App\Carriers\Exception\UnknownJsonFormatException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class JsonCarrier extends BaseCarriers
 {
-
     /**
      * @param string $data
      * @return array
-     * @throws UnKnownCurrencySymbolException
+     * @throws UnknownJsonFormatException
      */
     protected function decodeRates(string $data): array
     {
@@ -28,7 +29,7 @@ class JsonCarrier extends BaseCarriers
      * @return array
      * @throws UnknownJsonFormatException
      */
-    protected function validRates(string $data): array
+    protected function validRates(string $data)
     {
         $validator = Validator::make(['array' => $data], ['array' => 'json']);
         if ($validator->fails())
@@ -42,8 +43,8 @@ class JsonCarrier extends BaseCarriers
      * @param string $carrier
      * @return array
      * @throws UnKnownCurrencySymbolException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function modelRates(array $rates,string $carrier): array
     {

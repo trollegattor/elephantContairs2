@@ -30,6 +30,6 @@ class XmlRule implements Rule
      */
     public function message(): string
     {
-        return  throw new UnknownXmlFormatException('Unknown format from XML carrier.');
+        return throw new UnknownXmlFormatException('Unknown format from XML carrier.');
     }
 }

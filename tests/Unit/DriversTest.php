@@ -14,10 +14,8 @@ class DriversTest extends TestCase
 {
     /**
      * @return void
-     * @throws ExpirationDateException
-     * @throws UnKnownPortException
      */
-    public function testCreateDriverJson()
+    public function testCreateDriverJson(): void
     {
         $modelJson=new CarrierModel(
             carrier: 'JSON',
@@ -33,7 +31,11 @@ class DriversTest extends TestCase
         $managerJson=$manager->driver('Jsoncarrier')->getRates( 'ESBCN', 'USMIA', 'JSON');
         $this->assertEquals($modelJson, $managerJson);
     }
-    public function testCreateDriverXML()
+
+    /**
+     * @return void
+     */
+    public function testCreateDriverXML(): void
     {
         $modelXml=new CarrierModel(
             carrier: 'XML',
@@ -49,7 +51,11 @@ class DriversTest extends TestCase
         $managerXml=$manager->driver('Xmlcarrier')->getRates( 'ESBCN', 'USMIA', 'XML');
         $this->assertEquals($modelXml,$managerXml);
     }
-    public function testCreateDriverDefault()
+
+    /**
+     * @return void
+     */
+    public function testCreateDriverDefault(): void
     {
         $modelJson=new CarrierModel(
             carrier: 'JSON',

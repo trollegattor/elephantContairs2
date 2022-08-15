@@ -11,7 +11,7 @@ class PriceService implements PriceServiceContract
      * @param string $amount
      * @return array
      */
-    public function getTotalPrice(array $carriers,  string $amount): array
+    public function getTotalPrice(array $carriers, string $amount): array
     {
         array_map(function ($data) use ($amount) {
             $priceContainers = bcmul($amount, $data->pricePerContainer, 2);
