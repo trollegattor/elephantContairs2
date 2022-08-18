@@ -5,6 +5,7 @@ namespace App\Carriers;
 use App\Carriers\Exception\ExpirationDateException;
 use App\Carriers\Exception\UnKnownPortException;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 abstract class BaseCarriers
 {

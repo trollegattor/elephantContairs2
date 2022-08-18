@@ -20,22 +20,22 @@ class JsonCarrier extends BaseCarriers
     {
         $this->validRates($data);
         $jsonData = json_decode($data);
+        if (gettype($jsonData) != 'array')
+            return array($jsonData);
 
         return $jsonData;
     }
 
     /**
-     * @param string $data
-     * @return array
+     * @param $data
+     * @return void
      * @throws UnknownJsonFormatException
      */
-    protected function validRates(string $data)
+    protected function validRates($data): void
     {
         $validator = Validator::make(['array' => $data], ['array' => 'json']);
         if ($validator->fails())
             throw new UnknownJsonFormatException("Unknown format from Json carrier.");
-
-        return [];
     }
 
     /**
@@ -46,9 +46,9 @@ class JsonCarrier extends BaseCarriers
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function modelRates(array $rates,string $carrier): array
+    protected function modelRates(array $rates, string $carrier): array
     {
-        array_walk($rates, function (&$data) use($carrier) {
+        array_walk($rates, function (&$data) use ($carrier) {
             $data = new CarrierModel(
                 carrier: $carrier,
                 origin: strtoupper($data->origin),

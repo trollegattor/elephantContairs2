@@ -18,6 +18,8 @@ class XmlCarrier extends BaseCarriers
         $xmlData = simplexml_load_string($data);
         $arrayXmlData = (array)json_decode(json_encode($xmlData));
         $finalArrayXmlData = array_pop($arrayXmlData);
+        if (gettype($finalArrayXmlData) != "array")
+            return array($finalArrayXmlData);
 
         return $finalArrayXmlData;
     }
